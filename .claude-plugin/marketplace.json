@@ -1,0 +1,16 @@
+{
+  "name": "mkl-design-skills",
+  "description": "Opinionated design skills for AI coding agents: patterns, tokens and review checklists, not copied components.",
+  "owner": {
+    "name": "Wobblz"
+  },
+  "plugins": [
+    {
+      "name": "mkl-design-skills",
+      "description": "Design skills for building products with AI agents. Starts with mkl-motion.",
+      "source": "./",
+      "strict": false,
+      "skills": ["./skills/mkl-motion"]
+    }
+  ]
+}

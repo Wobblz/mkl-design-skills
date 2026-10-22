@@ -6,25 +6,34 @@ The web version of rhythm is not a baseline grid. Mixed sizes, images, embeds an
 
 ## 1. What good editorial sites actually do
 
-Measured on 2026-10-22 with Playwright and Chromium at 1440px and 390px widths. Gaps are box to box, so they include half-leading. Many major news sites (NYT, New Yorker, FT, Bloomberg, Medium, Substack, OpenAI) could not be reached from the research environment, so these figures rest on fewer sites than intended. Re-measure them when you can.
+Measured live on 2026-10-22 with Playwright and Chromium at 1440px and 390px widths, one or two long articles per site. Gaps are box to box, so they include half-leading, and are given in body lines (gap ÷ body line-height). NYT, Bloomberg and Medium served bot walls and the FT served its paywall, so they are not in the table.
 
-| Site [evidence] | Body size / line-height | Measure (desktop) | Paragraph gap | Above ÷ below h2 | Figure gap ÷ paragraph gap |
-|---|---|---|---|---|---|
-| Anthropic research [measured live] | 16.4px / 1.53 | 624px, ~80 characters | 24px = 0.96 lines | 48 / 24 = 2.0 | 2.7 desktop, 2.0 mobile |
-| Distill [rendered from source] | 17px / 1.7 | 704px, ~85 characters | 1em = 0.59 lines | 49 / 24 = 2.0 | 2.5 |
-| Tufte CSS [rendered from source] | 21px / 1.43 | 693px, ~80 characters | 21px = 0.7 lines | 1.5 (3.9 at a section start) | 2.1 |
-| The Guardian [read from source] | 17px / 1.4 | 620px | 12px = 0.5 lines | large (inferred) | 1.0 |
-| arXiv HTML (ar5iv) [read from source] | 16px / 1.5 | 832px | 24px = 1.0 line | ~1.7 (inferred) | — |
+| Site | Body size / line-height (desktop → mobile) | Measure, desktop | Paragraph gap | Above ÷ below heading | Figure gap ÷ paragraph gap | End of article |
+|---|---|---|---|---|---|---|
+| The Guardian | 17px / 1.4, same on mobile | 620px, ~75 ch | 0.5 lines | h2: rule + 1.1 lines above, ~0 below | — | 1.0 line |
+| The New Yorker | 21px / 1.5, same on mobile | 640px, ~74 ch | 0.5 lines | no subheads | 3.0 (1.5 lines) | 4 lines |
+| Practical Typography | 21.8px / 1.45 | 652px, ~74 ch | 0.7 lines | no subheads | — | — |
+| Distill, Transformer Circuits | 17 → 14px / 1.7 → 1.6 | 704px, ~85 ch | 0.6 lines | h3: 57 / 20 = 2.85; h2 starts a section after a rule (152 / 24) | 2.5 | 3.5–6 lines |
+| Works in Progress | 18px / 1.5, same on mobile | 728px, ~85 ch | 0.75 lines | h3: 50 / 20 = 2.5 | 1.5 | — |
+| Every | 20 → 18px / 1.5 | 736px, ~83 ch | 0.67 lines | h2: 30 / 12 = 2.5 | 1.0 above, 3.5 below | — |
+| Substack (Astral Codex Ten, Noahpinion) | 19 → 17px / 1.6 | 728px, ~82–87 ch | 0.66 lines | h2: 31 / 19 = 1.6 | 1.6 | 1.7 lines |
+| OpenAI | 17px / 1.65, same on mobile | 676px, ~90 ch | 0.86 lines | h2: 64 / 24 = 2.7 | 2.7 above, 3.7 below | 2.3 lines |
+| Anthropic research | 16.4 → 15px / 1.53 | 624px, ~85–90 ch | 0.96 lines | h3: 48 / 24 = 2.0 | 2.7 desktop, 2.0 mobile | 3.8 lines |
+| Craig Mod | 20 → 17.6px / 1.5 | 746px, ~85 ch | 1.0 line | no subheads | 0.5 | 2.2 lines |
+| The Pudding | 20 → 18px / 1.55 | 650px, ~56 ch | 1.0 line | h2: 80 / 20 = 4.0; h3: 32 / 12 = 2.7 | — | 3.9 lines |
 
 What they share:
 
-- **Paragraph gap: 0.5–1.0 × the body line-height.** Only gwern.net, among the sites examined, indents paragraphs (2.5em) instead.
-- **Space above a heading is about 2× the space below it.** The heading binds to its section.
-- **Figures, blockquotes, code and rules get 2–2.7× the paragraph gap.** The Guardian is the exception, spacing figures like paragraphs.
-- **Captions and notes are 0.75–0.85 × the body size.**
-- **The end of an article gets 3–4 lines** before the next region.
-- **Lists follow one of two schools:** items spaced like paragraphs (Anthropic, Distill), or nearly touching (Tufte, Guardian). Either way, the list as a whole takes the paragraph gap before and after.
-- **Desktop measures run long (80–88 characters)**, offset by generous leading (1.43–1.7). Measure and leading are one decision.
+- **Paragraph gap: 0.5–1.0 × the body line-height, median about 0.7.** News and magazine sites sit at the tight end (Guardian, New Yorker 0.5), newsletters and essays in the middle (Substack, Every, Butterick, Works in Progress 0.66–0.75), brand research blogs at the loose end (OpenAI, Anthropic, Craig Mod, Pudding 0.86–1.0). Only gwern.net, among sites examined, indents paragraphs (2.5em) instead.
+- **Space above a heading is 2–3× the space below it, median 2.5.** Six of eight measured heading levels fall between 2.0 and 2.85. Substack's default (1.6) and the Pudding's h2 (4.0) are the outliers, and the Guardian replaces space with a rule above its h2s. The heading binds to its section either way.
+- **In absolute terms, about 2 lines above a heading and 0.65–0.85 lines below** (OpenAI 2.3 / 0.86, Distill 2.0 / 0.7, Anthropic 1.9 / 0.96, Works in Progress 1.85 / 0.74, Pudding 2.6 / 0.65). Every and Substack go tighter, about 1 line above.
+- **Figures get 1.5–3× the paragraph gap.** Brand and research sites sit at 2.5–2.7; newsletters at 1–1.6. Several sites give more space below a figure than above it (OpenAI, Every), because the caption ends the interruption.
+- **Captions are 0.75–0.85 × the body size** (Distill 0.77, Substack 0.74, OpenAI 0.82) and sit 0.25–0.65 lines below the image. Anthropic keeps captions at body size in its sans.
+- **Blockquotes are spaced like paragraphs on newsletters** (Substack, Craig Mod) and like figures on magazines (New Yorker 1.5 lines).
+- **List items nearly touch on most sites: 0.25–0.3 lines** (Substack, OpenAI, Pudding, Transformer Circuits), some closer to 0.1 (Every, Distill). Butterick spaces items like paragraphs. The list as a whole takes the paragraph gap before and after.
+- **The end of an article gets 2–4 lines**, more on research sites (Distill up to 6). The Guardian is the exception at one line, because its tag list follows directly.
+- **Desktop measures run long: 74–90 characters.** The three sites at 74–75 (Guardian, New Yorker, Butterick) are the classic print-led ones; tech and research sites run 83–90 with looser leading (1.5–1.7). Only the Pudding stays near the textbook 56. Measure and leading are one decision.
+- **On phones, half the sites drop body size by 1–3px and half keep it.** Mobile measures land at 35–51 characters. Spacing in px stays fixed, so in line terms it grows slightly as the type shrinks.
 
 ## 2. The spacing table
 
@@ -32,24 +41,24 @@ Express every gap in `rlh` (the root element's line-height), so spacing follows 
 
 | Between | Gap | Why |
 |---|---|---|
-| Paragraph → paragraph | 0.6–1.0 rlh (default 0.75) | Clearly a new thought, still one text. Butterick: 50–100% of the body size |
+| Paragraph → paragraph | 0.5–1.0 rlh (default 0.75) | Clearly a new thought, still one text. Measured median 0.7; news sites 0.5, research blogs up to 1.0 |
 | Paragraph → paragraph, indent model | 0, with `text-indent: 1–1.5em` | The indent marks the break. Never indent the first paragraph after a heading or break |
-| Anything → h2 | 1.5–2 rlh (≈ 2 × the gap below it) | Separates sections |
+| Anything → h2 | 2 rlh (1.5–2.5; ≈ 2–3 × the gap below it) | Separates sections. Measured median about 2 lines above, ratio 2.5 |
 | Anything → h3 | 1.25 rlh | Weaker break than h2 |
 | h2 → h3 directly | 0.5 rlh | They belong together |
-| h2 → its first paragraph | 0.75 rlh (≤ 1 × paragraph gap) | Binds the heading to its text; above : below ≈ 2 : 1 |
+| h2 → its first paragraph | 0.75 rlh (≤ 1 × paragraph gap) | Binds the heading to its text; above : below ≈ 2.5 : 1 |
 | h3 → its first paragraph | 0.5 rlh | Same 2–2.5 : 1 ratio |
 | Title → standfirst / dek | 0.5 rlh | One unit |
 | Standfirst → byline / meta | 1 rlh | |
 | Meta → first paragraph | 1.5–2 rlh | Start of the text proper |
 | Paragraph → list, list → paragraph | Paragraph gap | A list is part of the flow |
-| List item → list item | 0.25 rlh (tight) or paragraph gap (when items are sentences) | Choose one school per site |
+| List item → list item | 0.25 rlh (tight) or paragraph gap (when items are sentences) | Choose one school per site. Most measured sites use the tight one |
 | Nested list | 0.25 rlh above | |
-| Paragraph → figure, figure → paragraph | 2 rlh (≈ 2–2.7 × paragraph gap) | An interruption needs air |
-| Figure image → caption | 0.5–0.65 rlh | Caption belongs to the image |
-| Paragraph → blockquote / pull quote / code / table / hr | 1.5–2 rlh | |
+| Paragraph → figure, figure → paragraph | 2 rlh (1–2.5; ≈ 1.5–3 × paragraph gap) | An interruption needs air. Brand and research sites 2.5–2.7 × the paragraph gap, newsletters about 1.5 × |
+| Figure image → caption | 0.25–0.65 rlh | Caption belongs to the image |
+| Paragraph → blockquote / pull quote / code / table / hr | 1–2 rlh | A quoted paragraph inside an essay can take the paragraph gap (Substack, Craig Mod) |
 | Section break (`hr`, asterism ⁂ or space) | 2–3 rlh total | A pause, not a new section |
-| Last paragraph → end of article | 3–4 rlh | Ends the piece clearly |
+| Last paragraph → end of article | 3–4 rlh | Ends the piece clearly. Measured 2–4 lines, research sites more |
 | Footnotes / endnotes block | 3 rlh above, notes 0.25–0.5 rlh apart | Separate apparatus |
 | First child of the article | 0 above | The container's padding handles it |
 
@@ -64,7 +73,7 @@ Production sites put the margin on the *start* of the element that follows anoth
 
 .prose > *                   { --flow: initial; margin-block: 0; }  /* reset UA margins; stop nested .prose inheriting --flow */
 .prose > * + *               { margin-block-start: var(--flow, 0.75rlh); }
-.prose > h2                  { --flow: 1.5rlh; }
+.prose > h2                  { --flow: 2rlh; }
 .prose > :is(h3, h4)         { --flow: 1.25rlh; }
 .prose > h2 + *              { --flow: 0.75rlh; }
 .prose > :is(h3, h4) + *     { --flow: 0.5rlh; }
@@ -124,11 +133,11 @@ Product UI doesn't use a prose flow. Use the spacing scale and `gap`:
 - **Group by proximity.** Label to its field 0.25–0.5rem, field to field 1–1.5rem, group to group 2–3rem. The ratio between levels matters more than the numbers.
 - **Use `gap` in flex and grid**, not margins on children.
 - **Trim half-leading** on text inside padded components with `text-box: trim-both cap alphabetic`, so padding looks equal above and below (`references/optical.md`).
-- **Section headings in settings pages and forms** follow the same 2:1 rule as prose: more space above than below.
+- **Section headings in settings pages and forms** follow the same rule as prose: 2–3 times more space above than below.
 
 ## 6. Mobile
 
-- Reduce the large gaps, not the small ones. Paragraph gaps stay the same in `rlh`. Figure gaps drop from about 2.7× to 2× the paragraph gap (Anthropic: 64px → 48px).
-- Keep the 2:1 heading ratio.
-- Reading columns on phones run 40–55 characters at 16–18px. Don't shrink the body text to fit more.
+- Reduce the large gaps, not the small ones. Paragraph gaps stay the same in `rlh`. Figure gaps can drop from about 2.7× to 2× the paragraph gap (Anthropic: 64px → 48px), though most measured sites keep them.
+- Keep the heading ratio.
+- Reading columns on phones measured 35–51 characters. Half the measured sites keep the desktop body size on phones (Guardian, New Yorker, OpenAI, Works in Progress); the rest drop 1–3px, Distill as far as 14px. Don't go below 16px for long reading.
 - Side padding of at least 1rem, so hanging punctuation and markers have somewhere to go (`references/optical.md`).

@@ -51,12 +51,13 @@
 
 ## Measured sites (Oct 2026)
 
-Spacing in `references/rhythm.md` comes from:
-- **Measured live** with Playwright: anthropic.com research posts.
-- **Rendered locally from their published source:** Distill (distillpub/template) and Tufte CSS (edwardtufte/tufte-css).
-- **Read from source code:** The Guardian (dotcom-rendering, @guardian/source), FT Origami, arXiv HTML (ar5iv-css), gwern.net.
+Spacing in `references/rhythm.md` comes from live measurement on 2026-10-22 with Playwright and Chromium at 1440px and 390px, one or two long articles per site:
+- **News and magazines:** The Guardian (an opinion column and a sectioned explainer), The New Yorker (two magazine features).
+- **Research and brand blogs:** anthropic.com research, openai.com (two posts), distill.pub, transformer-circuits.pub.
+- **Essays and newsletters:** Works in Progress (two essays), Every, Substack (Astral Codex Ten, Noahpinion), Craig Mod, The Pudding, Practical Typography (desktop only; the mobile run timed out).
+- **Read from source code, earlier:** Tufte CSS, FT Origami, arXiv HTML (ar5iv-css), gwern.net.
 
-Not measured, because the research environment's network blocked them: NYT, New Yorker, FT and Guardian live sites, Bloomberg, Medium, Substack, openai.com, transformer-circuits.pub, The Pudding, Works in Progress, Stripe Press, Craig Mod, Every. Measure these when possible and update the table.
+Not measured: NYT (DataDome bot wall), Bloomberg (PerimeterX bot wall), Medium (Cloudflare challenge) and the FT (paywall; only the subscribe page renders). The New Yorker's mobile run hit its metered paywall partway through the article, so its mobile figures cover the opening only. Stripe Press publishes books rather than articles and was skipped.
 
 ## Tools
 

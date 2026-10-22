@@ -26,7 +26,7 @@ Use the `font-variant-*` longhands. They cascade and combine: setting `font-vari
 | Stylistic alternates | `font-variant-alternates: stylistic(name)` | `salt` |
 | Capital spacing | none | `cpsp` |
 
-Support (Oct 2026): `font-variant-numeric` Baseline since 2022; `font-variant-alternates` and `@font-feature-values` Baseline since March 2023 (Chrome 111, Firefox 34, Safari 9.1+ for the property).
+Support (Oct 2026): `font-variant-numeric` Baseline Widely available since 2022; `font-variant-alternates` and `@font-feature-values` Baseline Newly available since March 2023 (Chrome 111, Firefox 34, Safari 16.2 for `styleset()` and `character-variant()`). `font-variant-position` is not Baseline.
 
 Use `font-feature-settings` only for tags with no high-level form (`case`, `cpsp`, a bare `cvNN`), scope it narrowly, and compose it through custom properties so features don't erase each other:
 
@@ -40,7 +40,7 @@ Use `font-feature-settings` only for tags with no high-level form (`case`, `cpsp
 
 The re-declaration matters: `font-feature-settings` inherits as a computed value, so children of `:root` don't re-read the custom properties unless the property is declared on them again.
 
-Don't put `font-feature-settings: "kern" 1, "liga" 1, "calt" 1` on `body`. Those features are already on, and the rule blocks every later `font-feature-settings` from combining with it. Inter's site recommends `"liga" 1, "calt" 1` as a fix for Chrome; if you copy it, scope it to the elements that need it.
+Don't put `font-feature-settings: "kern" 1, "liga" 1, "calt" 1` on `body`. Those features are already on, and the inherited low-level setting overrides high-level properties further down: `code { font-variant-ligatures: none }` stops working because the inherited `"liga" 1` wins. Any component that sets its own `font-feature-settings` also replaces the whole list. Inter's site recommends `"liga" 1, "calt" 1` as a fix for Chrome; if you copy it, scope it to the elements that need it.
 
 ## 2. Figures
 
@@ -70,8 +70,8 @@ Bringhurst: "Genuine small caps are not simply shrunken versions of the full cap
 
 - **Acronyms in running text:** `font-variant-caps: all-small-caps` with `letter-spacing: 0.05em`. Write the acronym in capitals in the HTML (`<abbr>NASA</abbr>`) so it reads correctly with styles off.
 - **Small-cap headings or lead-ins:** `font-variant-caps: small-caps`.
-- **Stop the browser faking them:** `font-synthesis-small-caps: none` (Chrome 97, Firefox 111, Safari 16.4; Baseline since 2025). Then a font without `smcp` shows lowercase, which is easy to spot in review.
-- **Check for `smcp` and `c2sc` separately.** Inter has `c2sc` but no `smcp`, so `small-caps` on lowercase is synthesized unless synthesis is off. If the font lacks real small caps, use capitals at a smaller size step with tracking instead, or use another font for that role.
+- **Stop the browser faking them:** `font-synthesis-small-caps: none` (Chrome 97, Firefox 111, Safari 16.4; Baseline Widely available since 2025). Then a font without `smcp` shows lowercase, which is easy to spot in review.
+- **Check for `smcp` and `c2sc` separately.** Many UI sans faces have neither: Inter (3 and 4) has no `smcp` or `c2sc`, so its small caps are always synthesized unless synthesis is off. If the font lacks real small caps, use capitals at a smaller size step with tracking instead, or use another font for that role.
 - **Bulgarian small caps** need a font whose small-cap glyphs follow the Bulgarian forms. Check them with `lang="bg"` (`references/language.md`).
 
 ```css
@@ -84,13 +84,13 @@ Also consider `font-synthesis-weight: none` and `font-synthesis-style: none`, bu
 
 ## 5. Stylistic sets, character variants and alternates
 
-Stylistic sets have no standard meaning. Inter's `ss01` is open digits; Fira Sans's `ss01` holds Bulgarian forms. Always read the font's documentation or inspect it.
+Stylistic sets have no standard meaning. Inter's `ss01` is open digits. Source Serif 4's `ss01` is "Cyrillic: Bulgarian alternates". Google's Fira Sans uses `ss01` for Pan-African Latin alternates, while bBoxType's newer Fira Sans 4.3 builds put Bulgarian forms there. Always read the font's documentation or inspect it.
 
 Common uses:
 - **Disambiguation in UI and code-adjacent text:** a set that distinguishes I, l and 1, and O and 0. Inter has `ss02` (disambiguation) and `ss04` (disambiguation without slashed zero); `cv11` is a single-storey a; `zero` gives the slashed zero.
 - **A brand's preferred letterforms:** alternate a, g, y or R set once on the brand elements.
 - **Display flourishes:** swashes and stylistic alternates on a headline, never in body text.
-- **Language forms that the font only offers as a set** (Fira Sans `ss01` for Bulgarian).
+- **Language forms the font also offers as a set** (Source Serif 4 `ss01` for Bulgarian), to force them regardless of `lang`.
 
 Name sets once with `@font-feature-values`, so components ask for a meaning instead of a number. If the font changes, only the mapping changes:
 
@@ -99,7 +99,7 @@ Name sets once with `@font-feature-values`, so components ask for a meaning inst
   @styleset         { disambiguate: 2; open-digits: 1; }
   @character-variant { single-storey-a: 11; }
 }
-@font-feature-values "Fira Sans" {
+@font-feature-values "Source Serif 4" {
   @styleset { bulgarian: 1; }
 }
 
@@ -131,6 +131,7 @@ Compose it through a custom property if the element also needs other low-level t
 
 ## 8. Discovering features
 
+- **Inspect the file the site actually serves**, not the font's specimen page. Google Fonts API and Fontsource files drop stylistic sets, character variants, `case`, `zero`, small caps, oldstyle figures and `dlig` (checked Oct 2026), so those features need a self-hosted full font.
 - **Wakamai Fondue** (wakamaifondue.com): drop a font, see every feature and axis, copy the CSS.
 - **FontDrop** (fontdrop.info) and **FontGauntlet** (fontgauntlet.com): glyph maps, features, axes.
 - **fontTools:** `ttx -t GSUB font.woff2` lists substitution features and their languages; `pyftsubset` builds subsets (pass `--layout-features='*'` to keep everything).

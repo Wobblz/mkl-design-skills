@@ -18,7 +18,7 @@
 
 - CSS Fonts Level 4, CSS Text Level 3/4, CSS Inline Level 3 (`text-box-trim`), CSS Values (units): w3.org/TR.
 - MDN (developer.mozilla.org) and its data, @mdn/browser-compat-data. This skill used version 8.1.7 (2026-10-22).
-- web-features and webstatus.dev for Baseline status. This skill used web-features 3.43.0 (2026-10-21).
+- web-features and webstatus.dev for Baseline status. This skill used web-features 3.43.0 (published 2026-10-15).
 - caniuse.com, including its per-language hyphenation tables.
 - WCAG 2.2 Understanding documents: 1.4.4 Resize Text, 1.4.8 Visual Presentation, 1.4.10 Reflow, 1.4.12 Text Spacing.
 - Microsoft's OpenType feature registry, for what each feature tag means.
@@ -31,7 +31,7 @@
 | Utopia (utopia.fyi), Trys Mudford and James Gilyead | Fluid type and space scales; the `clamp()` formula |
 | Maxwell Barvian, "Addressing Accessibility Concerns With Using Fluid Type" (Smashing, Nov 2023), and fluid.style | The 2.5× rule for zoom-safe fluid type |
 | Adrian Roselli, "Responsive Type and Zoom" (updated Oct 2025) | Fluid type failures and the 2× cap rule |
-| rsms.me/inter and rsms.me/inter/dynmetrics | Inter's features and its tracking/leading formulas |
+| rsms.me/inter, and the archived Inter 3 dynamic metrics page (d.rsms.me/inter-website/v3/dynmetrics/) | Inter's features and its tracking formula |
 | WebKit blog: "Better typography with text-wrap pretty" (2025), line-height units | `pretty` in Safari; `lh` units |
 | Chrome for Developers: `text-wrap: pretty`, `text-box-trim` (2025), font fallbacks | Chrome behaviour; fallback metric overrides |
 | web.dev, font best practices | `font-display`, preload, subsetting |
@@ -72,7 +72,7 @@ About fifteen agent skills or rule sets touch typography. They're useful, but no
 ## Still unverified (Oct 2026)
 
 Carry these as unverified until checked:
-- Bringhurst's 45–75 character range and his classical size scale, against the book.
+- Bringhurst's classical size scale, against the book.
 - The `text-wrap: balance` line limit in Chromium (sources say 4 or 6).
 - Whether Google Fonts' served subsets keep Bulgarian `locl` lookups and stylistic sets.
 - Bulgarian quote, number and date conventions against an official source (BAS Institute for Bulgarian Language).

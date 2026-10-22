@@ -28,16 +28,17 @@ What they share:
 
 ## 2. The spacing table
 
-Express every gap in `rlh` (the root line-height), so spacing follows the body leading even inside a heading with its own tighter line-height. Set the root line-height to the body leading.
+Express every gap in `rlh` (the root element's line-height), so spacing follows the body leading even inside a heading with its own tighter line-height. **`1rlh` equals one body line only when the root's font-size and line-height match the body text.** If body text is 18px, set `html { font-size: 112.5% }` (a percentage, so user font settings still scale it) and size everything else in `rem`, rather than setting 18px on `.prose` alone.
 
 | Between | Gap | Why |
 |---|---|---|
 | Paragraph → paragraph | 0.6–1.0 rlh (default 0.75) | Clearly a new thought, still one text. Butterick: 50–100% of the body size |
 | Paragraph → paragraph, indent model | 0, with `text-indent: 1–1.5em` | The indent marks the break. Never indent the first paragraph after a heading or break |
-| Anything → h2 | 2 rlh (≈ 2 × paragraph gap, or more) | Separates sections |
-| Anything → h3 | 1.5 rlh | Weaker break than h2 |
-| h2 → h3 directly | 0.75 rlh | They belong together |
-| Heading → its first paragraph | 0.5 rlh (≤ 1 × paragraph gap) | Binds the heading to its text |
+| Anything → h2 | 1.5–2 rlh (≈ 2 × the gap below it) | Separates sections |
+| Anything → h3 | 1.25 rlh | Weaker break than h2 |
+| h2 → h3 directly | 0.5 rlh | They belong together |
+| h2 → its first paragraph | 0.75 rlh (≤ 1 × paragraph gap) | Binds the heading to its text; above : below ≈ 2 : 1 |
+| h3 → its first paragraph | 0.5 rlh | Same 2–2.5 : 1 ratio |
 | Title → standfirst / dek | 0.5 rlh | One unit |
 | Standfirst → byline / meta | 1 rlh | |
 | Meta → first paragraph | 1.5–2 rlh | Start of the text proper |
@@ -59,13 +60,15 @@ Butterick's rule of thumb also holds: "the best way to emphasize a heading is by
 Production sites put the margin on the *start* of the element that follows another (`* + *`), not on both sides. This avoids margin collapsing surprises and lets each relationship be targeted.
 
 ```css
-:root { line-height: 1.55; }       /* body leading; 1rlh now equals one body line */
+:root { font-size: 112.5%; line-height: 1.55; }   /* root = body text (18px by default), so 1rlh = one body line */
 
+.prose > *                   { --flow: initial; margin-block: 0; }  /* reset UA margins; stop nested .prose inheriting --flow */
 .prose > * + *               { margin-block-start: var(--flow, 0.75rlh); }
-.prose > :is(h2)             { --flow: 2rlh; }
-.prose > :is(h3, h4)         { --flow: 1.5rlh; }
-.prose > h2 + h3             { --flow: 0.75rlh; }
-.prose > :is(h2, h3, h4) + * { --flow: 0.5rlh; }
+.prose > h2                  { --flow: 1.5rlh; }
+.prose > :is(h3, h4)         { --flow: 1.25rlh; }
+.prose > h2 + *              { --flow: 0.75rlh; }
+.prose > :is(h3, h4) + *     { --flow: 0.5rlh; }
+.prose > h2 + h3             { --flow: 0.5rlh; }
 
 .prose > :is(figure, pre, table, blockquote, hr, aside),
 .prose > :is(figure, pre, table, blockquote, hr, aside) + * { --flow: 2rlh; }
@@ -111,7 +114,7 @@ Research sites (Distill, Tufte CSS, arXiv HTML, gwern.net, Anthropic's research 
 .article > *          { grid-column: text; }
 .article > .wide      { grid-column: wide; }
 .article > .full      { grid-column: full; }
-.article figcaption   { max-inline-size: 33em; }
+.article figcaption   { max-inline-size: 41em; }   /* 33em of body text at the caption's 0.8em */
 ```
 
 ## 5. Rhythm in UI

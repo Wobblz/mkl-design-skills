@@ -12,7 +12,7 @@ An opening quote at the start of a paragraph or blockquote should sit in the mar
 - Use it inside `@supports` as an enhancement, plus a fallback class added at build time for paragraphs that start with a quote.
 - **Only hang where the margin has room.** On a phone with the text close to the screen edge, the quote would be clipped. Turn the fallback off below the width where the column has a gutter.
 
-Pull values from the Typeset project (tune per font): double quotes −0.46em, single quotes −0.27em, « about −0.3em.
+Pull values from the Typeset project (tune per font): double quotes −0.46em, single quotes −0.27em. The « value below (−0.3em) is a starting guess, not Typeset's.
 
 ```css
 @supports (hanging-punctuation: first) {
@@ -31,7 +31,7 @@ Pull values from the Typeset project (tune per font): double quotes −0.46em, s
 ```js
 // build step or client-side for CMS content: tag blocks that open with a quote
 const CLASS = { '“': 'hang-dq', '"': 'hang-dq', '„': 'hang-dq', '‘': 'hang-sq', "'": 'hang-sq', '‚': 'hang-sq', '«': 'hang-gm' }
-for (const el of document.querySelectorAll('.prose :is(p, blockquote)')) {
+for (const el of document.querySelectorAll('.prose p')) {   // paragraphs only: text-indent inherits, so a class on a blockquote would shift every paragraph in it
   const c = CLASS[el.textContent.trimStart()[0]]
   if (c) el.classList.add(c)
 }
@@ -62,6 +62,7 @@ Bullets and numbers should hang in the margin, so the list text aligns with the 
   position: absolute; inset-inline-end: 100%; padding-inline-end: 0.5em;
   font-variant-numeric: tabular-nums;
 }
+@media (max-width: 40em) { .prose ol.hang { padding-inline-start: 1.5em; } }   /* after the rule above, or it loses */
 ```
 
 ```html
@@ -75,18 +76,17 @@ Bullets and numbers should hang in the margin, so the list text aligns with the 
 No browser does optical margin alignment (the glyph protrusion InDesign and pdfTeX apply to every line). At display sizes, a heading that starts with T, V, W, Y, A, O, C, G or Q, or with a quote, looks indented next to body text below it.
 
 - **Correct only at about 48px and above**, where the error is more than a pixel. At body sizes leave it.
-- **Pull the first glyph into the margin** by an amount relative to the size. Typeset's starting values: T V W Y −0.07em, O C G Q −0.04em, A −0.03em. Tune per font by placing the heading over the body text and adjusting until the stems line up.
-- **Single-line headings:** shift the whole heading with `margin-inline-start`.
-- **Multi-line headings:** only the first line starts with that letter, so wrap the first glyph in a span and shift the span. Keep the word whole for screen readers (shift with margin, don't split the word into separate text nodes that change reading).
+- **Pull the first glyph into the margin** by an amount relative to the size. Typeset's starting values: T V W Y −0.07em, O C −0.04em, A −0.03em. G and Q at −0.04em are an extrapolation from O and C. Tune per font by placing the heading over the body text and adjusting until the stems line up.
+- **Use a negative `text-indent`.** It moves only the first line, so it's right for single-line and multi-line headings alike, and it leaves the text untouched for screen readers.
 - **Lines after a wrap** can start with any letter. No maintained library adjusts every wrapped line in the browser; if it matters (a poster-like hero), set the line breaks by hand.
 
 ```js
-// display headings only; values from Typeset, tune per font
+// display headings only; values from Typeset (G, Q, « extrapolated), tune per font
 const PULL = { T: .07, V: .07, W: .07, Y: .07, A: .03, O: .04, C: .04, G: .04, Q: .04, '“': .46, '"': .46, '‘': .27, "'": .27, '«': .3 }
 for (const h of document.querySelectorAll('h1, h2, .display')) {
   const first = h.textContent.trimStart()[0]
   if (PULL[first] && parseFloat(getComputedStyle(h).fontSize) >= 48) {
-    h.style.marginInlineStart = `-${PULL[first]}em`
+    h.style.textIndent = `-${PULL[first]}em`   // first line only
   }
 }
 ```
@@ -111,7 +111,7 @@ Run it at build time where the content is static (a rehype plugin that adds a cl
 ```css
 .prose > p:first-of-type::first-letter {
   float: inline-start;
-  font-size: calc(3 * 1lh / 0.72);   /* 0.72 ≈ the font's cap-height ratio; tune */
+  font-size: calc((2 * 1lh + 1cap) / 0.72);   /* cap height spans 3 lines: 2 line-heights + 1 cap; 0.72 ≈ the font's cap-height ratio */
   line-height: 1;
   margin-inline-end: 0.08em;
   margin-block-start: 0.06em;

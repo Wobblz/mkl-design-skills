@@ -7,7 +7,7 @@ The `lang` attribute is a typesetting setting, not just metadata. It does four j
 1. **Localized glyphs.** It tells the text shaper which language the text is in, so the font's `locl` feature can swap in local forms: Bulgarian and Serbian Cyrillic, Polish kreska accents, Romanian comma-below ș and ț, Dutch IJ, and others.
 2. **Hyphenation.** `hyphens: auto` uses the dictionary for the element's language, and does nothing without one (`references/line-breaking.md`).
 3. **Quotation marks.** `quotes: auto` (the default) and `<q>` pick the language's marks.
-4. **Casing.** `text-transform` follows language rules: Turkish and Azerbaijani i → İ, Greek uppercase drops accents, Dutch ij → IJ.
+4. **Casing.** `text-transform` follows language rules: Turkish and Azerbaijani i → İ, Greek uppercase drops accents (not in Safari), Dutch ij → IJ (not in Chrome).
 
 Rules:
 - Set `<html lang="…">` on every page.
@@ -27,10 +27,10 @@ Bulgarian has its own Cyrillic letterforms, different from the Russian ones most
 
 **Fonts (checked Oct 2026; not a catalogue, just proof of each route):**
 - Bulgarian forms by default: Sofia Sans.
-- Through `locl` with `lang="bg"`: Source Serif 4, Fira Sans, Montserrat.
-- Through a stylistic set: Fira Sans `ss01`.
+- Through `locl` with `lang="bg"`: Source Serif 4, Montserrat. The `locl` survives in Google-served files.
+- Through a stylistic set as well: Source Serif 4 `ss01` ("Cyrillic: Bulgarian alternates"), and bBoxType's Fira Sans 4.3 builds. Google's Fira Sans has no Bulgarian forms. Stylistic sets are stripped from Google-served files, so this route needs a self-hosted full font.
 - **No Bulgarian forms:** Roboto (the request has been open since about 2016). Apple's system fonts on iOS are reported to render Bulgarian with Russian forms, so a system-font stack falls back to Russian shapes.
-- Whether Google Fonts' served subsets keep the Bulgarian `locl` lookups is unverified. One user found a Google-served font missing its Bulgarian localisation. Test the actual served file.
+- Google-served files kept the Bulgarian `locl` for Source Serif 4 and Montserrat (Oct 2026), but one user found another Google-served font missing its localisation. Test the actual served file.
 
 **Checking a font:** inspect it for `locl` under `cyrl`/`BGR` (SKILL.md §5), then render a test string such as "Жълтата дюля беше щастлива, че пухът, който цъфна, замръзна като гьон." with and without `lang="bg"` and compare д, л, в, ж, т, ю.
 
@@ -48,12 +48,13 @@ Bulgarian has its own Cyrillic letterforms, different from the Russian ones most
 :lang(bg) body { font-family: "Sofia Sans", system-ui, sans-serif; }
 :lang(bg) p    { hyphens: auto; text-align: start; }     /* no Safari dictionary: never justify */
 
-@font-feature-values "Fira Sans" { @styleset { bulgarian: 1; } }
-.fira:lang(bg) { font-variant-alternates: styleset(bulgarian); }
+/* self-hosted Source Serif 4: force Bulgarian forms even where lang is missing */
+@font-feature-values "Source Serif 4" { @styleset { bulgarian: 1; } }
+.serif-bg { font-variant-alternates: styleset(bulgarian); }
 ```
 
 **Bulgarian conventions** (standard orthography, but not checked against an official source for this skill; confirm before shipping):
-- Quotes „…“ (low-9 opening, high-6 closing): `:lang(bg) q { quotes: "„" "“" "‚" "‘"; }`. Check what `quotes: auto` gives for `bg` in each browser.
+- Quotes „…“ (low-9 opening, high-6 closing): `:lang(bg) q { quotes: "„" "“" "‚" "‘"; }`. Chromium's `quotes: auto` for `bg` uses „“ at both levels; the nested ‚‘ above is a common choice, so confirm the house style.
 - Decimal comma, space as the thousands separator: 1 234 567,89. Check `Intl.NumberFormat('bg-BG')` output, which may not group four-digit numbers.
 - Dates as 22.10.2026 г., with a no-break space before "г.".
 - Dash with spaces for parenthetical breaks: "думи – думи".
@@ -67,7 +68,7 @@ Bulgarian has its own Cyrillic letterforms, different from the Russian ones most
 - **Romanian** needs comma-below ș ț (U+0219, U+021B), not cedilla ş ţ.
 - **Turkish:** `text-transform: uppercase` maps i to İ only with `lang="tr"`.
 - **German:** `text-transform: uppercase` turns ß into SS; capital ẞ exists but browsers don't use it by default.
-- **French:** a narrow no-break space (U+202F) before ; : ! ? and inside « ». CSS doesn't add it; put it in the content.
+- **French:** a no-break space before : and inside « », and a narrow no-break space (U+202F) before ; ! ? (many publishers now use the narrow one everywhere). CSS doesn't add them; put them in the content.
 - **CJK:** `text-spacing-trim` and `text-autospace` handle punctuation width and spacing between CJK and Latin. `text-spacing-trim` is Chrome-only (123+) as of Oct 2026.
 
 ## 4. Characters

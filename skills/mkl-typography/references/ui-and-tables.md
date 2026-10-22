@@ -7,7 +7,7 @@ Product UI is read in glances, not paragraphs. The goals are scanning, stable la
 - **Name roles by job**, not size: `label`, `body`, `caption`, `title`, `metric`, `code`. A role is size + line-height + weight + tracking (+ figures).
 - **Few roles, clear steps.** Adjacent roles must differ visibly in size or weight; 13px and 14px with the same weight is not a hierarchy.
 - **Body 14–16px, labels 12–14px.** 12px and below only for metadata, never for anything the user must act on. Keep small text at weight 400 or more.
-- **Line-height 1.3–1.45 for UI body**, 1.2–1.25 for single-line controls and dense table rows.
+- **Line-height 1.4–1.45 for UI body**, 1.25–1.3 for tables and compact UI, 1.2 for single-line controls.
 - **Sentence case for labels and buttons.** Title Case reads as shouting in UI and breaks across languages.
 - **Caps labels (eyebrows, table headers, tags):** use `text-transform: uppercase` on lowercase source text, track +0.06–0.1em, and add `"case" 1` so punctuation sits at cap height. Keep them short.
 

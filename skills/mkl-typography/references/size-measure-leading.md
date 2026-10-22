@@ -23,7 +23,7 @@ Reference stepped scales (as of Oct 2026):
 |---|---|---|---|
 | Apple iOS (default Dynamic Type) | Body 17/22pt | Footnote 13/18, Caption 12/16 | Large Title 34/41 |
 | Material 3 | bodyLarge 16/24 | bodySmall 12/16 | displayLarge 57/64 |
-| IBM Carbon | body-01 14/20 (productive), body-02 16/24 | label-01 12/16 | display-04 up to 92/102 |
+| IBM Carbon | body-01 14/20 (productive), body-02 16/24 | label-01 12/16 | display-04, fluid up to 156px / 1.05 |
 | Tailwind v4 | `text-base` 1rem / 1.5 | `text-xs` 0.75rem / 1.33 | `text-9xl` 8rem / 1 |
 
 **Generators** (checked Oct 2026 unless noted):
@@ -76,7 +76,7 @@ Define the scale as `--text-*` tokens with paired sub-tokens:
 
 ## 2. Measure (line length)
 
-- **Bringhurst:** "The 66-character line (counting both letters and spaces) is widely regarded as ideal." For multi-column work, 40–50 characters. The commonly quoted 45–75 range is attributed to him but was not checked against the book for this skill.
+- **Bringhurst:** "The 66-character line (counting both letters and spaces) is widely regarded as ideal." Anything from 45 to 75 characters is satisfactory for single-column text set in a serif at text size. For multi-column work, 40–50 characters.
 - **Butterick:** 45–90 characters, or 2–3 lowercase alphabets per line as a quick test.
 - **Rutter:** `33em` gives about 66 characters, because an average character is about 0.5em wide. It scales with text zoom.
 - **WCAG 1.4.8 (AAA):** no more than 80 characters.
@@ -85,7 +85,7 @@ The `ch` trap: `1ch` is the advance width of the "0" glyph, not an average chara
 
 ```css
 .prose { max-inline-size: 33em; margin-inline: auto; }   /* inline-size works in vertical writing too */
-.prose :is(h1, h2) { max-inline-size: 22em; }            /* shorter lines for display sizes */
+.prose :is(h1, h2) { max-inline-size: 24ch; }            /* measured in the heading's own size: ~20–25 characters */
 ```
 
 - **Phones:** 40–55 characters at 16–18px. Don't shrink the text to fit more.
@@ -96,7 +96,7 @@ The `ch` trap: `1ch` is the advance width of the "0" glyph, not an average chara
 
 - **Unitless, always.** `line-height: 1.5`, not `24px` or `1.5em`, so children inherit the ratio, not a fixed length.
 - **Butterick:** 120–145% of the size. Published systems run higher at reading sizes.
-- **Leading falls as size rises.** Published systems converge on about 1.5 at 16px, 1.25 at 32px and 1.1 at 60px and above (Material 3 57/64 = 1.12, Carbon 92/102 = 1.11, Tailwind 1.0 from 48px).
+- **Leading falls as size rises.** Published systems converge on about 1.5 at 16px, 1.25 at 32px and 1.1 at 60px and above (Material 3 57/64 = 1.12, Carbon display 1.05–1.11, Tailwind 1.0 from 48px).
 - **Leading rises with measure.** A long line needs more leading so the eye finds the next line. The measured editorial sites with 80+ character lines use 1.43–1.7.
 - **Large x-height faces need more leading** (Butterick).
 - **Cyrillic and accented text** with tall diacritics or descenders (й, ё, Ё) needs a little more leading than English in the same font, especially in display sizes at 1.0–1.1. Test with real strings.
@@ -120,7 +120,7 @@ Starting values:
 - **Capitals and small caps: +5–10% of the size** (Bringhurst 2.1.6), so `letter-spacing: 0.05–0.1em`. More for small sizes, less for large.
 - **Small UI text (11–13px): slightly positive**, about +0.01–0.02em.
 - **Display: slightly negative**, about −0.01 to −0.03em, tuned by eye per font.
-- **Fonts with a published tracking curve:** use it. Inter's formula is `tracking = −0.016 + 0.21 × e^(−0.18 × size)` (rsms.me/inter/dynmetrics), giving about +0.013em at 11px, −0.004em at 16px and −0.016em at 48px. Apple's system fonts track automatically at every size. Fonts with an `opsz` axis adjust spacing per size themselves, so they need less manual tracking.
+- **Fonts with a published tracking curve:** use it. Inter 3's formula is `tracking = −0.0223 + 0.185 × e^(−0.1745 × size)` in em (archived at d.rsms.me/inter-website/v3/dynmetrics/), giving about +0.005em at 11px, −0.011em at 16px and −0.022em at 48px. It predates Inter 4's `opsz` axis, which now does part of this work. Apple's system fonts track automatically at every size. Fonts with an `opsz` axis adjust spacing per size themselves, so they need less manual tracking.
 - **Letter-spacing disables optional ligatures** (`liga`, `clig`). That's usually right for tracked caps. If a tracked line needs ligatures, turn them back on with `font-feature-settings`.
 - **Never letterspace Arabic** or other connected scripts.
 
@@ -148,8 +148,9 @@ For scrolling layouts, keep two ideas from it:
 - **Leave more space after a block than before it**, as the canon leaves more at the bottom than the top.
 
 ```css
-/* A5 (148 × 210mm, close to 2:3): inner = width/9, top = height/9, outer = 2·width/9, bottom = 2·height/9 */
-@page        { size: A5; }
-@page :right { margin: calc(210mm / 9) calc(148mm * 2 / 9) calc(210mm * 2 / 9) calc(148mm / 9); }
-@page :left  { margin: calc(210mm / 9) calc(148mm / 9) calc(210mm * 2 / 9) calc(148mm * 2 / 9); }
+/* a true 2:3 page (140 × 210mm): inner = width/9, top = height/9, outer = 2·width/9, bottom = 2·height/9 → 2:3:4:6.
+   On A-series pages (1:1.414) the same ninths give the canon's construction but not the 2:3:4:6 ratio. */
+@page        { size: 140mm 210mm; }
+@page :right { margin: calc(210mm / 9) calc(140mm * 2 / 9) calc(210mm * 2 / 9) calc(140mm / 9); }
+@page :left  { margin: calc(210mm / 9) calc(140mm / 9) calc(210mm * 2 / 9) calc(140mm * 2 / 9); }
 ```

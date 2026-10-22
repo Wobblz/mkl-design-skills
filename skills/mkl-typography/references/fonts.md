@@ -8,7 +8,7 @@
 | `optional` | ~100ms | None (skipped if late; used next visit) | Body text when layout stability matters most |
 | `fallback` | ~100ms | ~3s | A middle ground |
 
-web.dev recommends `optional` for body text when performance comes first and `swap` for brand faces. Without `font-display`, Chromium and Firefox hide text for up to 3 seconds, and Safari can hide it indefinitely.
+web.dev recommends `optional` for body text when performance comes first and `swap` for brand faces. Without `font-display`, browsers hide text for up to about 3 seconds while the font loads.
 
 **Rules:**
 - **WOFF2 only.** Self-host or use a build tool that does (`next/font`, Fontsource). Self-hosting is not automatically faster, but it removes a connection and keeps fonts under your cache rules.
@@ -35,7 +35,7 @@ web.dev recommends `optional` for body text when performance comes first and `sw
   src: url(/fonts/inter-cyrillic.woff2) format("woff2");
   font-weight: 100 900;
   font-display: optional;
-  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
 }
 @font-face {
   font-family: "Inter Fallback";
@@ -48,7 +48,7 @@ web.dev recommends `optional` for body text when performance comes first and `sw
 body { font-family: "Inter", "Inter Fallback", system-ui, sans-serif; line-height: 1.5; }
 ```
 
-The fallback metrics above are Chrome's published example for Inter over Arial. Regenerate them for your font.
+The fallback metrics above match what `next/font` generates for Inter over Arial. Regenerate them for your font.
 
 Check subset files keep the features you need (`locl`, `tnum`, stylistic sets): SKILL.md §5.
 
@@ -77,11 +77,14 @@ Fonts are `--font-*` theme tokens. Point them at the `next/font` variables with 
 @theme inline {
   --font-sans: var(--font-inter);
   --font-serif: var(--font-source-serif);
-  --font-sans--font-feature-settings: "cv11" 1;
 }
 ```
 
 A Google Fonts `@import url(...)` must come before `@import "tailwindcss"`.
+
+Tailwind also supports `--font-sans--font-feature-settings`, but its preflight applies that on `html`, which is the global `font-feature-settings` this skill warns against (`references/opentype.md` §1). Set features on the components that need them instead.
+
+`next/font/google` downloads from the Google Fonts API, whose files drop stylistic sets, character variants, `case`, `zero`, small caps and oldstyle figures (SKILL.md §5). If the design needs them, self-host the full font with `next/font/local`.
 
 ## 2. Variable axes
 

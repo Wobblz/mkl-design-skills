@@ -85,25 +85,28 @@ Bind with a no-break space (U+00A0, `&nbsp;`) or a narrow one (U+202F):
 A build step (rehype or a CMS filter) is the reliable way to do this. Hand-typing `&nbsp;` doesn't survive editors.
 
 ```js
-// rehype-style text transform, scoped by language; run on text nodes outside code/pre
+// text transform for a rehype plugin or CMS filter; run on text nodes outside code/pre
+const NB = '\u00A0'
+const UNIT = String.raw`(?:%|‰|°C|°F|€|\$|£|лв\.?|г\.|км|кг|мин|ч|см|мм|м|kg|g|mg|km|m|cm|mm|ml|l|min|h|s|ms|KB|MB|GB|TB|px|pt)`
 const rules = {
   any: [
-    [/(\d)\s+(%|‰|°C|°F|[kKmMgGT]?[bBgmsl]|kg|km|min|h|€|\$|£|лв\.?)/g, '$1 $2'],
-    [/\b(No\.|p\.|pp\.|fig\.|§)\s+/g, '$1 '],
+    [new RegExp(String.raw`(\d)\s+(${UNIT})(?![\p{L}\p{N}])`, 'gu'), `$1${NB}$2`],
+    [/(?<![\p{L}])(No\.|no\.|p\.|pp\.|[Ff]ig\.|§)\s+(?=[\p{N}\p{L}])/gu, `$1${NB}`],
   ],
-  bg: [[/(^|\s)([ВвСсИиАаОоУу])\s+/g, '$1$2 ']],
+  bg: [[/(?<=^|[\s(„"«])([ВвСсИиАаОоУу])\s+/gu, `$1${NB}`]],
 }
-export function bindSpaces(text, lang) {
-  for (const [re, to] of [...rules.any, ...(rules[lang.split('-')[0]] ?? [])]) text = text.replace(re, to)
+export function bindSpaces(text, lang = '') {
+  const extra = rules[lang.toLowerCase().split('-')[0]] ?? []
+  for (const [re, to] of [...rules.any, ...extra]) text = text.replace(re, to)
   return text
 }
 ```
 
-Treat the regexes as a starting point: test them against real content, since a CMS will find every edge case.
+Tested on English and Bulgarian samples: units bind only when they stand alone ("5 min", not "5 minutes"), runs of one-letter words bind ("и в града"), and a missing `lang` is handled. Treat it as a starting point and test it against real content, since a CMS will find every edge case.
 
 ## 6. Long strings
 
-- **URLs and long identifiers:** `overflow-wrap: anywhere` (Baseline 2021) breaks them only when necessary, and also lets the element shrink in flex and grid so it doesn't overflow its container. Prefer it to `break-word`.
+- **URLs and long identifiers:** `overflow-wrap: anywhere` (Baseline 2022) breaks them only when necessary, and also lets the element shrink in flex and grid so it doesn't overflow its container. Prefer it to `break-word`.
 - **`word-break: break-all`** only for hashes, keys and code, where any break is fine.
 - **`<wbr>`** after `/`, `.` and `?` in displayed URLs gives nicer break points.
 - **`word-break: auto-phrase`** is Chrome-only (119+) and affects only Japanese and Korean.

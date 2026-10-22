@@ -7,7 +7,7 @@ Opinionated design skills for AI coding agents. Each skill turns design craft in
 | Skill | What it covers |
 |---|---|
 | [`mkl-motion`](skills/mkl-motion/SKILL.md) | Motion for React/Next.js products. It covers when to animate and when not to. It defines three registers (daily UI, showcase, text-mode) and a one-runtime stack (CSS → View Transitions → Motion). It includes named spring tokens with measured behaviour, 46 patterns with reduced-motion fallbacks, a review checklist, and a curated catalogue of libraries to study rather than install. |
-| [`mkl-typography`](skills/mkl-typography/SKILL.md) | Web typography for laying out text, from the print canon (Bringhurst, Tschichold, Butterick, Rutter) to CSS you can ship today. It covers three registers (reading, UI, display), type-scale methods, measure and leading, vertical rhythm measured on editorial sites, OpenType features and tabular figures, `lang` and Bulgarian Cyrillic forms, hyphenation and line breaking, hanging punctuation and optical alignment, drop caps, font loading and dark mode, with dated browser support and a review checklist. |
+| [`mkl-typography`](skills/mkl-typography/SKILL.md) | Web typography for laying out text, from the print canon (Bringhurst, Tschichold, Butterick, Rutter) to CSS you can ship today. It covers three registers (reading, UI, display), type-scale methods, measure and leading, vertical rhythm measured on editorial sites, OpenType features and tabular figures, `lang` and Bulgarian Cyrillic forms, hyphenation and line breaking, hanging punctuation and optical alignment, drop caps, emphasis, code and maths, font loading, dark mode, forced colours and OG images, with dated browser support and a review checklist. |
 
 More are on the way.
 

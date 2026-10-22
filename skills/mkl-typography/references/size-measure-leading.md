@@ -108,6 +108,7 @@ Define the scale as `--text-*` tokens with paired sub-tokens:
 - **Butterick:** 45–90 characters, or 2–3 lowercase alphabets per line as a quick test.
 - **Rutter:** `33em` gives about 66 characters, because an average character is about 0.5em wide. It scales with text zoom.
 - **WCAG 1.4.8 (AAA):** no more than 80 characters.
+- **What editorial sites do (measured Oct 2026):** 74–90 characters on desktop. The print-led ones (Guardian, New Yorker, Butterick) sit at 74–75; tech and research sites run 83–90 with leading of 1.5–1.7 (`references/rhythm.md` §1). Past 75, raise the leading; past 90, narrow the column.
 
 The `ch` trap: `1ch` is the advance width of the "0" glyph, not an average character. In most proportional fonts "0" is wider than the average letter, so `66ch` sets more than 66 characters. Start with `max-inline-size: 33em`, or 60–65ch, then count real characters on a real paragraph.
 

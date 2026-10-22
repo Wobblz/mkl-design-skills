@@ -80,7 +80,7 @@ About fifteen agent skills or rule sets touch typography. They're useful, but no
 Carry these as unverified until checked:
 - Bringhurst's classical size scale, against the book.
 - The `text-wrap: balance` line limit in Chromium (sources say 4 or 6).
-- Whether Google Fonts' served subsets keep Bulgarian `locl` lookups and stylistic sets.
+- Whether `next/font/google` serves the same feature-stripped files as the Google Fonts API (very likely, since it uses the API; not tested directly). Google-served files were checked: `locl` kept, stylistic sets and small caps stripped.
 - Bulgarian quote, number and date conventions against an official source (BAS Institute for Bulgarian Language).
 - Bulgarian forms in fonts not listed in `references/language.md`.
 - Whether an explicit `line-height` removes vertical font-swap shift in Safari.

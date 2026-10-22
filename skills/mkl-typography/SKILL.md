@@ -28,7 +28,7 @@ Typography here means setting text, not drawing fonts. Printers have solved most
 ## 1. The laws
 
 1. **Typography serves the text.** Bringhurst's first principle. Every choice should make the words easier to read or easier to find. Decoration that costs reading is wrong in body text, whatever it does for a hero.
-2. **Measure, leading and size are one decision.** A longer line needs more leading, a larger size needs less, and a smaller size needs a shorter line. Change one and re-check the other two. Long-form body text sits around 60–75 characters at line-height 1.5–1.6 (`references/size-measure-leading.md`).
+2. **Measure, leading and size are one decision.** A longer line needs more leading, a larger size needs less, and a smaller size needs a shorter line. Change one and re-check the other two. Long-form body text sits around 60–75 characters at line-height 1.5–1.6. Well-set editorial sites run to 75–90 characters, but only with leading of 1.5–1.7 (`references/size-measure-leading.md`, `references/rhythm.md` §1).
 3. **Space shows structure.** Space above a heading is two to three times the space below it, so the heading belongs to what follows. Paragraphs are separated by space *or* an indent, never both. Blocks that interrupt the text (figures, quotes, code) get more space than paragraphs (`references/rhythm.md`).
 4. **Rhythm comes from the line, not a grid.** Spacing is a multiple of the body line-height (`rlh`, once the root size and line-height match the body text), so the page has a pulse. A locked baseline grid fights mixed sizes, images and zoom on the web, so don't build one for scrolling pages.
 5. **Tracking follows size and case.** Body lowercase gets zero. Capitals and small caps get +5–10%. Large display type gets slightly negative tracking. Never letterspace lowercase body text to fill a line.
@@ -50,7 +50,7 @@ Decide which register a block of text belongs to before setting it. The budgets 
 | | **Reading** (articles, docs, research, long product copy) | **UI** (product chrome, forms, tables, dashboards) | **Display** (headlines, heroes, covers, pull quotes) |
 |---|---|---|---|
 | Size | Body 17–21px at desktop, never below 16px | 13–16px roles; 12px only for metadata | Fluid; set by layout |
-| Measure | 60–75 characters (`max-inline-size: 33em` is a good start) | Set by the component; truncate with care | 8–25 characters per line is typical |
+| Measure | 60–75 characters (`max-inline-size: 33em` is a good start); up to ~85 with leading 1.6+ | Set by the component; truncate with care | 8–25 characters per line is typical |
 | Line-height | 1.5–1.6 | 1.4–1.45; tables and compact UI 1.25–1.3 | 1.0–1.15 |
 | Tracking | 0 | 0, small labels +0.01–0.02em, caps labels +0.06–0.1em | −0.01 to −0.03em, tuned by eye |
 | Figures | Proportional (oldstyle in serif text if the font has them) | Tabular lining | Lining, proportional |
@@ -189,7 +189,7 @@ Score 1 point per item for each text surface. A reading surface under 9/10 gets 
 
 1. **Register:** the surface has one, and its budgets from §2 are met.
 2. **Scale:** every size comes from a named step, with paired line-height and tracking.
-3. **Measure:** reading columns are 60–75 characters, checked with real text, not `ch` arithmetic.
+3. **Measure:** reading columns are 60–75 characters (up to ~85 with leading 1.6+), checked with real text, not `ch` arithmetic.
 4. **Rhythm:** spacing comes from a flow system in `rlh`; headings sit closer to what follows than to what precedes.
 5. **Paragraphs:** space or indent, never both; first paragraph after a heading is not indented.
 6. **Figures:** tabular lining figures wherever numbers change or line up; proportional in prose.

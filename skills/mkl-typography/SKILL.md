@@ -1,6 +1,6 @@
 ---
 name: mkl-typography
-description: Web typography for laying out text. Use when setting or reviewing type on a page or in product UI, including type scales, line length, line-height, vertical rhythm, tracking, OpenType features, tabular figures, hyphenation, line breaks, hanging punctuation, optical alignment, drop caps, font loading, or text in Bulgarian and other languages.
+description: Web typography for laying out text. Use when setting or reviewing type on a page or in product UI, including type scales, line length, line-height, vertical rhythm, tracking, OpenType features, tabular figures, hyphenation, line breaks, hanging punctuation, optical alignment, drop caps, font loading, container-query type, forced colours, OS text scaling, OG images, emphasis, code blocks, maths, or text in Bulgarian and other languages.
 ---
 
 # Typography
@@ -16,6 +16,9 @@ Typography here means setting text, not drawing fonts. Printers have solved most
 - **Long-form article, docs or research page:** `references/rhythm.md`, then `references/line-breaking.md` and `references/optical.md`.
 - **Product UI, tables and numbers:** `references/ui-and-tables.md`, then `references/opentype.md`.
 - **Non-English text, Bulgarian, quotes and dashes:** `references/language.md`.
+- **Emphasis, code blocks or maths inside prose:** `references/prose-elements.md`.
+- **Type inside reusable components, or respecting the OS text size:** `references/size-measure-leading.md` §1.
+- **Forced colours (Windows contrast themes) or OG images from `next/og`:** `references/fonts.md` §4–5.
 - **Fonts flashing, shifting or looking wrong in dark mode:** `references/fonts.md`.
 - **Reviewing existing typography:** §7 checklist, with §6 as the list of findings to look for.
 - **Where a rule came from:** `references/sources.md`.
@@ -63,7 +66,7 @@ A docs site is reading register in the article column and UI register in the sid
 
 Support checked against @mdn/browser-compat-data 8.1.7 and web-features 3.43.0 on 2026-10-22 (Chrome 156, Firefox 158, Safari 27). Re-check anything marked partial before relying on it.
 
-**Use freely (Baseline):** `rem`/`em`/`ch`/`ic`, `lh`/`rlh` units (Widely available May 2026), `cap` unit (Widely June 2026), `clamp()`, `font-variant-ligatures`, `-numeric`, `-caps` and `-alternates` with `@font-feature-values` (`font-variant-position` is not Baseline), `font-synthesis-small-caps`, `font-kerning`, `font-size-adjust` (2024), `hyphens` and `hyphenate-character` (Widely March 2026), `text-wrap: balance` (2024), `text-wrap: stable`, `text-align-last`, `overflow-wrap: anywhere`, `@counter-style`, `text-underline-offset`, `text-decoration-thickness`, `text-decoration-skip-ink`, `::first-letter`, `::first-line`.
+**Use freely (Baseline):** `rem`/`em`/`ch`/`ic`, `lh`/`rlh` units (Widely available May 2026), `cap` unit (Widely June 2026), `clamp()`, `font-variant-ligatures`, `-numeric`, `-caps` and `-alternates` with `@font-feature-values` (`font-variant-position` is not Baseline), `font-synthesis-small-caps`, `font-kerning`, `font-size-adjust` (2024), `hyphens` and `hyphenate-character` (Widely March 2026), `text-wrap: balance` (2024), `text-wrap: stable`, `text-align-last`, `overflow-wrap: anywhere`, `@counter-style`, `text-underline-offset`, `text-decoration-thickness`, `text-decoration-skip-ink`, `::first-letter`, `::first-line`, container query units (`cqi`), `tab-size`, MathML, `@media (forced-colors)`.
 
 **Use with a fallback:**
 
@@ -77,6 +80,9 @@ Support checked against @mdn/browser-compat-data 8.1.7 and web-features 3.43.0 o
 | `text-justify` | Chrome 145, Firefox | Safari | Don't depend on it |
 | `ascent-override` and friends | Chrome 87, Firefox 89 | Safari (through 27.2) | `size-adjust` (Safari 17+) plus unitless `line-height` |
 | `::marker` styling | Full in Chrome, Firefox | Safari: `color` and `font-size` only | `::before` counters |
+| `<meta name="text-scale">` | Chromium 146 (experimental) | Firefox, Safari | Ignored; `rem` sizing still respects browser settings |
+| `font-family: math` | Chrome 109, Firefox 149, Safari 26.2 | Older versions | Name a self-hosted math font first |
+| `forced-color-adjust` | Chrome 89, Firefox 113 | Safari | Don't rely on opting out |
 | Hyphenation dictionaries | Vary by language and engine | e.g. Bulgarian in Safari, Polish in Chrome | Build-time soft hyphens, or ragged right |
 
 **Don't use:** `hyphenate-limit-lines`, `-zone`, `-last` (no stable browser), `text-align: "."` decimal alignment (no browser), `block-step` (mostly unsupported), `font-variation-settings` for weight, width or slant, a global `font-feature-settings: "kern", "liga", "calt"` on `body` (redundant, and it blocks later features), `text-rendering: optimizeLegibility` on long text (performance), `-webkit-font-smoothing` as a dark-mode fix.
@@ -85,6 +91,7 @@ Support checked against @mdn/browser-compat-data 8.1.7 and web-features 3.43.0 o
 - Size type in `rem`. Don't set `html { font-size }` in px; leave it alone or use `%`.
 - A fluid size's maximum must be no more than 2.5× its minimum, and never cap text below 2× its base, or 200% zoom fails (SC 1.4.4). Every `clamp()` includes a `rem` term.
 - Text must survive line-height 1.5, paragraph spacing 2em, letter-spacing 0.12em and word-spacing 0.16em with nothing clipped (SC 1.4.12). No fixed heights on text containers, and no ellipsis without a way to read the full text.
+- Forced colours (Windows contrast themes) replace colours and remove shadows and gradients. Links in prose keep their underline, emphasis never relies on colour alone, and focus uses `outline` (`references/fonts.md` §4).
 - WCAG has no minimum font size. Keep body text at 16px or above and small text at weight 400 or more.
 - Avoid long passages in all caps or italics. Justified text is an AAA failure (SC 1.4.8); set ragged right unless you have a reason.
 - WCAG 3 is still a working draft (Sep 2026) with no contrast method chosen. Don't cite APCA for conformance.
@@ -168,6 +175,11 @@ Do this before promising any feature, alternate or language form.
 - **Fixed-height text containers** that clip at 200% zoom or under the text-spacing override.
 - **Adding weight for dark mode.** Light text on dark looks heavier; reduce weight or grade instead.
 - **A baseline grid snapped with JavaScript** on a scrolling page.
+- **Emphasis or link state by colour alone**, which disappears in forced colours.
+- **Bold and italic together, or underline, for emphasis** in prose.
+- **Equations as images**, or inline stacked fractions that open the leading.
+- **Code blocks that wrap by default** where a break changes meaning, or that scroll without being keyboard-focusable.
+- **A variable font passed to `next/og`**, which renders only its default weight.
 
 ---
 
@@ -191,6 +203,9 @@ Then check the whole project:
 - No `font-feature-settings` or `font-variation-settings` where a high-level property exists.
 - Firefox gets the fallbacks for `pretty`, `initial-letter` and hanging punctuation. Safari gets them for hyphenation dictionaries and metric overrides.
 - Dark mode reduces weight or grade, or leaves static fonts alone.
+- Forced colours: links, emphasis, badges and focus are still visible with colours replaced.
+- Component titles that move between columns size with `cqi`, not `vw`.
+- OG images use static font files and render the right forms (`references/fonts.md` §5).
 
 ---
 
@@ -198,12 +213,13 @@ Then check the whole project:
 
 | File | Covers |
 |---|---|
-| `references/size-measure-leading.md` | Type-scale methods and generators, fluid type and zoom, measure, line-height, tracking, kerning, Tschichold's page canon |
+| `references/size-measure-leading.md` | Type-scale methods and generators, fluid type and zoom, container-query type, `<meta name="text-scale">`, measure, line-height, tracking, kerning, Tschichold's page canon |
 | `references/rhythm.md` | Vertical rhythm: measured editorial spacing, element-by-element spacing, the flow CSS, sidenotes and wide figures |
 | `references/opentype.md` | Ligatures, figures, fractions, small caps, stylistic sets and character variants, `@font-feature-values`, composing feature settings |
 | `references/ui-and-tables.md` | UI text roles, labels and caps, tables, numeric alignment, buttons and badges, truncation |
 | `references/language.md` | `lang`, `locl`, Bulgarian forms, quotes, dashes and other characters, number and date conventions, hyphenation dictionaries |
 | `references/line-breaking.md` | Hyphenation, justification, `text-wrap`, runts, widows, no-break spaces, long strings |
 | `references/optical.md` | Hanging punctuation, hanging lists, optical margin alignment, drop caps, `text-box-trim`, `cap` units, icons in text |
-| `references/fonts.md` | Font loading and CLS, metric-matched fallbacks, `next/font` and Tailwind v4, variable axes, dark-mode compensation |
+| `references/fonts.md` | Font loading and CLS, metric-matched fallbacks, `next/font` and Tailwind v4, variable axes, dark-mode compensation, forced colours, text in `next/og` images |
+| `references/prose-elements.md` | Emphasis and its HTML elements, code blocks, maths with MathML and math fonts |
 | `references/sources.md` | Books, specs, practitioners, tools, neighbouring agent skills, and provenance |

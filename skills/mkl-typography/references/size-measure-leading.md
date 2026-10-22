@@ -60,6 +60,34 @@ Browser zoom scales `rem` and `px` but not `vw`. A step that grows mostly with `
 - **Keep each step's maximum at or below 2.5× its minimum** (Barvian, Smashing Magazine, Nov 2023).
 - **Never cap text below 2× its base size** (Adrian Roselli, updated Oct 2025). He notes no fluid method is guaranteed safe, so test at 200% zoom.
 
+### Fluid type inside components
+
+Viewport steps suit page-level type: the article body, page headlines. A component that sits in a sidebar on one page and the main column on another needs type that follows its own width. Container query units (`cqi`; Chrome 105, Firefox 110, Safari 16) do that.
+
+- **Declare the container on the layout region** (`main`, `.sidebar`, `.card-grid`), not on the text. An element can't size against itself; `cqi` resolves against the nearest ancestor container.
+- **Without a container, `cqi` falls back to small-viewport units**, so one token still works at page level.
+- **`container-type: inline-size` ignores the element's content** when computing its width. A container inside a flex row or a shrink-to-fit box can collapse to zero; give it a width or let it stretch.
+- **Same zoom rules as `vw`:** keep a `rem` term and the 2.5× ratio. Use the Utopia formula with container widths in place of viewport widths and `cqi` in place of `vw`.
+- **Use it for display and card titles, not body text.** Reading text should be one size across the page wherever it sits.
+
+```css
+main, .sidebar, .card-grid { container-type: inline-size; }
+.card__title { font-size: clamp(1.125rem, 0.9rem + 2.5cqi, 1.75rem); }
+```
+
+### The OS text size (`<meta name="text-scale">`)
+
+Mobile browsers ignore the system text-size setting by default and resize text with their own heuristics. `<meta name="text-scale" content="scale">` opts in: the root `medium` size follows the OS setting, so everything in `rem` scales with it. Chromium 146+ only and still experimental; Firefox and Safari ignore the tag (Oct 2026). It is law 12 carried through to the OS.
+
+- **Add it only when the page is `rem` throughout:** no px root size, no px font sizes, and breakpoints in `rem` (`@media (width > 35rem)`), so layouts drop to one column as text grows.
+- **Test at the platform's maximum scale**, which runs from 200% to over 300% on mobile.
+- **It turns off the browser's mobile text auto-sizing**, so text that relied on it must be sized properly.
+- **Don't also use `env(preferred-text-scale)`.** Using both applies the scale twice (MDN).
+
+```html
+<meta name="text-scale" content="scale">
+```
+
 ### Tailwind v4
 
 Define the scale as `--text-*` tokens with paired sub-tokens:

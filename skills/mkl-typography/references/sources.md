@@ -43,6 +43,11 @@
 | github.com/nedyo/langbg | Bulgarian `locl` testing, Figma's missing language support |
 | Adam Argyle, nerdy.dev (Nov 2025); CSS-Tricks, "Dark mode and variable fonts" (2020) | Grade and weight in dark mode |
 | Typeset (npm `typeset`) | Build-time hanging punctuation, optical margin values, soft hyphens |
+| ModernCSS, "Container Query Units and Fluid Typography"; web.dev, container queries in action | `cqi` type with a `rem` term; containers resolve against the nearest ancestor |
+| MDN, `<meta name="text-scale">`; Josh Tumath, "Let's fix the web's text size" (Jul 2026) | OS text scaling on the web, and its Chromium-only support |
+| MDN, `forced-colors` | Which properties are forced, backplates, `forced-color-adjust` |
+| Satori README (vercel/satori, Oct 2026) | What `next/og` supports: default instance only for variable fonts, `textWrap` limits, locales |
+| MDN, MathML fonts guide; MathML Core (W3C CR) | Math fonts with a MATH table; native MathML in all engines |
 
 ## Measured sites (Oct 2026)
 

@@ -1,4 +1,4 @@
-# Fonts: loading, axes, dark mode
+# Fonts: loading, axes, dark mode, forced colours, generated images
 
 ## 1. Loading without invisible text or a jump
 
@@ -132,3 +132,50 @@ Some agent skills advise *adding* weight in dark mode; the sources found point t
 ```
 
 If the site has a theme toggle, apply the same rules under the toggle's selector (for example `[data-theme="dark"]`) as well as the media query.
+
+## 4. Forced colours
+
+Windows contrast themes replace the page's colours with the user's palette. `@media (forced-colors: active)` detects it (Chrome 89, Firefox 89, Safari 16). Font, size and spacing survive; colour, shadows and gradients don't, so typography has to carry the hierarchy on its own.
+
+What's replaced (MDN):
+- **`color`, `background-color` and `text-decoration-color`** become system colours. Emphasis, link state or a highlighted term shown only by colour disappears. Keep underlines on links in prose, and mark emphasis with style or weight, not colour alone.
+- **`text-shadow` and `box-shadow` become `none`.** Halos on text over images and shadow-only focus rings vanish. Use `outline` for focus: `outline: 2px solid transparent` becomes visible because its colour is forced.
+- **Gradient `background-image` is dropped.** Gradient text (`background-clip: text; color: transparent`) shows as plain text in the forced colour, which is the right result.
+- **Text over images** gets a backplate drawn by the browser, so it stays legible.
+
+Use the media query only for small fixes, with system colours (`CanvasText`, `LinkText`, `Highlight`, `ButtonText`). Don't build a second design. `forced-color-adjust: none` opts an element out (Chrome and Firefox; not Safari) and removes the backplate; keep it for colour swatches and logos, never for text.
+
+```css
+@media (forced-colors: active) {
+  .badge   { border: 1px solid CanvasText; }   /* the background colour that marked it is gone */
+  .callout { border-inline-start: 3px solid CanvasText; }
+}
+```
+
+Test in Chrome DevTools: Rendering → Emulate CSS media feature `forced-colors: active`.
+
+## 5. Text in generated images (`next/og`, Satori)
+
+`ImageResponse` in Next.js renders with Satori, a separate layout engine with its own CSS subset. Typography that works on the page can fail in the share image. From the Satori README (Oct 2026):
+
+- **Variable fonts render at their default instance**, usually Regular. Pass one static file per weight and style you use.
+- **Pass the full font file**, not a Google-served subset, if the image needs stylistic sets, small caps or oldstyle figures (SKILL.md §5).
+- **Features:** `font-variant-*` maps to the font's OpenType features, and `font-feature-settings` works. `@font-feature-values` isn't supported (so `font-variant-alternates` only does `historical-forms`), and small caps aren't synthesized.
+- **`textWrap: balance` and `pretty` only apply to text with no inline elements**, and `pretty` is approximated. Keep the headline one text node, or break it by hand.
+- **No Bulgarian locale.** Satori's `lang` handling covers CJK and a few other scripts, not Bulgarian, so don't count on `locl`. Use a font whose default Cyrillic is Bulgarian, or turn on its Bulgarian stylistic set with `font-feature-settings`. Check the rendered image.
+- **It's a fixed frame** (typically 1200×630), so the display register and Tschichold's canon for fixed frames apply (`references/size-measure-leading.md` §6). Sizes are px, which is fine here: nobody zooms an image.
+
+```tsx
+// app/opengraph-image.tsx
+const [regular, bold] = await Promise.all([
+  readFile(join(process.cwd(), 'assets/SourceSerif4-Regular.otf')),
+  readFile(join(process.cwd(), 'assets/SourceSerif4-Bold.otf')),
+])
+return new ImageResponse(<div style={{ fontFamily: 'Source Serif 4', fontFeatureSettings: '"ss01" 1' }}>{title}</div>, {
+  ...size,
+  fonts: [
+    { name: 'Source Serif 4', data: regular, weight: 400, style: 'normal' },
+    { name: 'Source Serif 4', data: bold, weight: 700, style: 'normal' },
+  ],
+})
+```

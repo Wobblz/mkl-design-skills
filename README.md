@@ -7,6 +7,7 @@ Opinionated design skills for AI coding agents. Each skill turns design craft in
 | Skill | What it covers |
 |---|---|
 | [`mkl-motion`](skills/mkl-motion/SKILL.md) | Motion for React/Next.js products. It covers when to animate and when not to. It defines three registers (daily UI, showcase, text-mode) and a one-runtime stack (CSS → View Transitions → Motion). It includes named spring tokens with measured behaviour, 46 patterns with reduced-motion fallbacks, a review checklist, and a curated catalogue of libraries to study rather than install. |
+| [`mkl-typography`](skills/mkl-typography/SKILL.md) | Web typography for laying out text, from the print canon (Bringhurst, Tschichold, Butterick, Rutter) to CSS you can ship today. It covers three registers (reading, UI, display), type-scale methods, measure and leading, vertical rhythm measured on editorial sites, OpenType features and tabular figures, `lang` and Bulgarian Cyrillic forms, hyphenation and line breaking, hanging punctuation and optical alignment, drop caps, font loading and dark mode, with dated browser support and a review checklist. |
 
 More are on the way.
 
@@ -37,11 +38,11 @@ npx skills add Wobblz/mkl-design-skills@mkl-motion   # one skill
 - **Project first.** A skill checks for the project's existing conventions and maps onto them before introducing its own.
 - **Checked facts.** Anything that changes over time, such as browser support, versions, pricing or maintenance, is dated and was checked against primary sources. Numbers are measured or simulated, not guessed.
 - **Credited.** Sources are named in each skill's reference section.
-- **Compact.** One `SKILL.md` per skill, kept to about 500 lines.
+- **Compact where it counts.** Each `SKILL.md` stays under about 500 lines and routes to `references/*.md` files that the agent opens only when a task needs them, so a skill can go deep without loading everything every time.
 
 ## Adding a skill
 
-1. Create `skills/mkl-<topic>/SKILL.md` with `name` and `description` frontmatter. The description should say when the skill applies.
+1. Create `skills/mkl-<topic>/SKILL.md` with `name` and `description` frontmatter. The description should say when the skill applies. Put depth in `skills/mkl-<topic>/references/` and link it from `SKILL.md`.
 2. Add `./skills/mkl-<topic>` to the `skills` array in `.claude-plugin/marketplace.json`.
 3. Add a row to the table above.
 4. Run `claude plugin validate .` before opening a PR.

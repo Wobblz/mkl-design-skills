@@ -7,10 +7,10 @@
   "plugins": [
     {
       "name": "mkl-design-skills",
-      "description": "Design skills for building products with AI agents. Starts with mkl-motion.",
+      "description": "Design skills for building products with AI agents. Motion and typography so far.",
       "source": "./",
       "strict": false,
-      "skills": ["./skills/mkl-motion"]
+      "skills": ["./skills/mkl-motion", "./skills/mkl-typography"]
     }
   ]
 }

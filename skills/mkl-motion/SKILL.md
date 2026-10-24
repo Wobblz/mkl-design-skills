@@ -1,17 +1,52 @@
 ---
 name: mkl-motion
-description: Motion design for React/Next.js products. Use when adding, changing or reviewing animation, transitions, micro-interactions, gestures, hero effects or glyph animation, or when asked to make UI feel slicker.
+description: Mike's motion design for React/Next.js products. Use whenever building or changing interactive UI, even when nobody mentions animation, because interactions, loading, numbers and disclosure get motion by default. Also use for adding, changing or reviewing animation, transitions, micro-interactions, gestures, hero effects or glyph animation, or when asked to make UI feel slicker.
 ---
 
 # Motion design
 
-Motion here is a material, like type or colour. It has a small vocabulary, and the same kind of movement feels the same on every screen. Work from patterns, not from components. The libraries in §13 are places to study technique, not packages to install, because stacking two or three animation runtimes costs bundle size and makes motion hard to orchestrate.
+Motion here is a material, like type or colour. It has a small vocabulary, and the same kind of movement feels the same on every screen. Work from patterns, not from components. The libraries in `references/catalogue.md` are places to study technique, not packages to install, because stacking two or three animation runtimes costs bundle size and makes motion hard to orchestrate.
 
 The vocabulary in §4 and §7 was tuned by hand in shipped products. **Check the project first.** If it already has a motion vocabulary (a `motion.ts(x)` of named springs, motion tokens in the global CSS, or a motion section in its docs), use that and map this file's patterns onto its names. If it has none, start one from §4.
 
+## 0. Motion is on by default
+
+**This is the rule the rest of the file serves.** Left alone, an agent ships a UI where nothing moves: buttons that don't press, panels that teleport open, numbers that blink to a new value, content that pops in. Mike counts that as unfinished, not neutral. Every interactive or changing thing on a screen gets motion unless a law in §1 says it shouldn't (keyboard-driven, 100+ times a day, or under reduced motion). The bar is yesterday and gh-dashboard: everything responds, and nothing makes you wait.
+
+When you build or touch a screen, go through this list. Every item that exists on the screen gets its pattern from §6–§7, without being asked:
+
+| On the screen | It gets |
+|---|---|
+| Buttons, icon buttons, pills, tappable rows | Press: `scale(0.97)` (`0.96`, or `0.85`–`0.9` for small icon buttons), `--dur-micro` |
+| Hover targets (rows, cards, links) | Background or colour on `--dur-fast`; links draw their hairline and lean their arrow |
+| Focus | The same visual as hover (the link line, the ring), never a jump |
+| Toggles, segmented controls, tabs, nav | Knob on `SNAP_SPRING`; a shared `layoutId` pill glides between options |
+| Popovers, menus, selects, tooltips, dialogs, sheets | Enter from their origin and exit faster, never pop (§6) |
+| Anything that expands (disclosure, "show more", details, progressive steps) | `FOLD_SPRING` height to `auto`, overflow clipped |
+| Lists that add, remove, filter or reorder | `layout` + `AnimatePresence`; removed cards fold their gap closed |
+| Loading | A skeleton in the page's shape with the soft light sweep, in CSS, so it moves before hydration. Never a blank or a lone spinner |
+| Data arriving (bars, dots, lines, grids) | Marks rise or pop from their baseline with a dense stagger (§7), in CSS |
+| Headline numbers and stats | Roll or count to their value on first view and on every meaningful change (§6, §7) |
+| Save, copy, send, complete | A confirmation: the saved wash, a check that rises in, or the edge sweep, played once |
+| Page or section arriving | Top of the page rises in with the CSS `enter` utility; below-the-fold blocks reveal once in view |
+| Images | Fade and settle over a placeholder; never pop in |
+| Errors | The slot drains (§7), and the message folds in under its field. Never only a colour change |
+| The product's one core gesture (a picker, a drag) | The most craft on the page: tracking spring, landing bounce, haptic ticks (§7 gesture fill) |
+
+**A delight moment is also part of the default:** one per surface, on the event that matters most (a first save, a completed streak, a filled month). It plays once per event and never on a hot path.
+
+What "on by default" does *not* mean:
+- **Frequency changes how, not whether.** A tool switched all day still crossfades its tabs. A keyboard path is instant, but the pressed button still shows it was pressed.
+- **It never means slow.** Everything daily stays inside the §2 budgets.
+- **Reduced motion still applies** (law 9). The meaning stays and the movement goes, with one exception Mike chose: headline numbers keep rolling (§6).
+
+In a review, **missing motion is a finding**, the same as bad motion. A button with no press state or a panel that teleports open goes in the table (§5c).
+
+---
+
 **Where to go:**
 - **Building a moment:** §1 laws → §2 register → §3 stack → §4 tokens → §5a workflow → the matching pattern in §6, §7 or §8.
-- **Borrowing from a library:** §5b, then §13 for where to look.
+- **Borrowing from a library:** §5b, then `references/catalogue.md` for where to look.
 - **Reviewing existing motion:** §12 checklist, with §11 as the list of findings to look for.
 - **Text-mode / ASCII / glyph work:** §9.
 
@@ -20,13 +55,13 @@ The vocabulary in §4 and §7 was tuned by hand in shipped products. **Check the
 ## 1. The laws
 
 1. **No job, no motion.** Every animation does one of these jobs: *feedback* (your press registered), *orientation* (where this came from and where it went), *state change* (toggled, loaded, saved, failed), *attention* (look here, once) or *delight* (rare and earned). If you can't name the job, cut the animation.
-2. **Frequency kills animation.** Anything used 100+ times a day, or triggered from the keyboard, is instant or at most a quick opacity change. A command palette, a keyboard shortcut or tab switching in a tool shouldn't make anyone wait. Save the craft for moments that happen once a day, like a daily check-in. Family calls this *selective emphasis*: how intense the delight is depends on how rarely the moment happens.
+2. **Frequency tames animation; it doesn't remove it (§0).** Anything used 100+ times a day, or triggered from the keyboard, is instant or at most a quick opacity change, while its press and hover feedback stays. A command palette, a keyboard shortcut or tab switching in a tool shouldn't make anyone wait. Save the craft for moments that happen once a day, like a daily check-in. Family calls this *selective emphasis*: how intense the delight is depends on how rarely the moment happens.
 3. **Fast by default.** Daily UI settles in under 300ms. Exits run 20–30% faster than entrances, because the user has already moved on. Elements that move as a unit (modal and backdrop, tooltip and arrow, drawer and overlay) share one duration and curve, or they visibly come apart.
 4. **Ease out on entry.** Things arriving decelerate into place. Ease-in is only for short exits (≤200ms), where the thing is leaving and the eye has let go of it. It never goes on an entrance or on anything the user is waiting to see.
 5. **Nothing from nowhere; fly, don't teleport.** A popover grows from its trigger. A sheet comes from its edge. A toast leaves the way it came. Something that moves elsewhere travels there visibly: a pending item flies to the tab where it will live, and a card becomes the screen it opens. Surfaces start at scale 0.9–0.97, never 0. Data marks (bars, dots, a slot's fill) may grow from 0 because zero is their meaning and their container is already on screen.
 6. **Springs for anything a hand can interrupt.** A spring retargets from its current velocity. A tween restarts from rest and visibly kinks. Use tweens for one-shot, non-interactive moves.
 7. **Spatial things may overshoot; effects never do.** Position, size and shape can bounce a little. Opacity, colour, blur and *numbers* settle without overshoot, because a count that overshoots briefly shows a wrong value.
-8. **Compositor only.** Animate `transform`, `opacity` and (carefully) `filter`/`clip-path`. Keep animated blur under ~20px, because larger blurs stutter, especially in Safari. Height to `auto` is the one accepted layout animation, and it stays short. Never use `transition: all`. Never run an infinite loop without an off-screen pause.
+8. **Compositor only.** Animate `transform`, `opacity` and (carefully) `filter`/`clip-path`. Keep animated blur under ~20px, because larger blurs stutter, especially in Safari. Height to `auto` is the one accepted layout animation, and it stays short. Never use `transition: all`. Never run an infinite loop without an off-screen pause, except a short loading loop (a skeleton sweep or spinner), which ends when the content arrives.
 9. **Reduce, don't remove.** Under `prefers-reduced-motion`, movement turns into opacity and feedback stays. A save still confirms, but it fades instead of sweeping.
 10. **Never gate content on animation.** Focus, data and interactivity are available at frame zero. Anything an animation reveals must be readable if JavaScript never runs.
 11. **One engine.** CSS → React `<ViewTransition>` → Motion. No second animation runtime in product code (§3).
@@ -282,7 +317,8 @@ The After column uses the project's tokens, never raw numbers. Keep it to the ta
 | Route / page | `<ViewTransition>` with direction types; crossfade + 8–16px slide | 250–350ms; old view exits faster | Crossfade |
 | Image arriving | Never pop in: blurred placeholder (thumbhash) or skeleton holds the slot; the image fades and settles | opacity 0→1, scale 1.04→1, `0.35s cubic-bezier(.2,.7,.2,1)`; over its own thumbnail, crossfade only; cached images skip | Fade only |
 | Skeleton | Page-shaped block with one soft light sweeping across, so waiting reads as "arriving" | Sweep 1.4s easeInOut, repeatDelay 0.25 | Static block |
-| Number change | Spring a motion value; **write to `textContent`, not React state**; once in view; `tabular-nums` | `COUNT_SPRING`; only on meaningful changes, not every poll | Instant value |
+| Number change | Small figures: spring a motion value; **write to `textContent`, not React state**; once in view; `tabular-nums`. Headline figures: digits roll NumberFlow-style (gh-dashboard uses `@number-flow/react`, the one accepted extra dependency) with the count spring baked into `linear()` for its timing, and the width easing between values, so proportional figures are fine there. Keep it hidden until it starts rolling, because the server can only render the 0 it rolls up from | `COUNT_SPRING` (~1.4s); only on meaningful changes, not every poll | Mike's call (2026-10-22): headline numbers keep rolling under reduced motion (`respectMotionPreference={false}`); small figures go instant |
+| Page / top of page arriving | CSS `enter` keyframe (opacity 0 + `translate: 0 14px`, `animation-fill-mode: backwards`, `--enter-delay` per block), with `REVEAL_SPRING` sampled into `linear()`. Not Motion, whose `initial` opacity 0 is written into the server HTML and keeps the top blank until hydration | `--dur-reveal` 489ms; masthead, headline and figures 40–80ms apart | Instant |
 | Scroll reveal | `whileInView` once, margin −8% bottom | y 14→0 + opacity, `REVEAL_SPRING`; siblings stagger 50–100ms | Opacity or none |
 | Haptic pairing (mobile) | Every gesture step ticks; release confirms; extreme values get a pattern | tick per row crossed; `confirm` on commit. Android: Vibration API. iOS Safari has never had it, but Safari 18 added a haptic to `<input type="checkbox" switch>`, so toggle a hidden one inside the gesture. Reported to stop firing from script in iOS 26.5, so treat it as best-effort and never as the only feedback | Haptics stay |
 
@@ -378,6 +414,7 @@ This is a separate aesthetic, not a fourth library. The medium is characters on 
 
 ## 11. Anti-patterns
 
+- **No motion at all** on an interactive screen: buttons with no press, panels that teleport, numbers that blink, content that pops in, a blank or bare spinner while loading (§0).
 - `transition: all`. Ease-in on an entrance. Linear on UI movement.
 - Daily UI over 350ms with no reason. Cascades longer than ~400ms (daily) or ~1.2s (showcase).
 - Surfaces entering from `scale(0)`. Popovers scaling from their centre.
@@ -410,6 +447,7 @@ Score each animation 1 point per item. In daily UI, anything under 7/8 gets fixe
 8. **Reduced motion:** a deliberate fallback that keeps the meaning.
 
 Then check the whole surface:
+- **Coverage first:** walk the §0 table. Every item present on the screen has its motion. Anything missing is a finding, and it comes first in the table.
 - Only one animation runtime in the production bundle. `MotionConfig reducedMotion="user"` at the root. `LazyMotion` where it pays off.
 - No raw `ms` or `cubic-bezier` literals in components; all come from tokens.
 - Keyboard: focus lands correctly as dialogs, sheets and routes open.
@@ -419,78 +457,9 @@ Then check the whole surface:
 
 ---
 
-## 13. Reference catalogue (Oct 2026)
+## 13. Reference catalogue
 
-Study these; don't depend on them. **Runtime** says what you'd inherit if you copied code.
-
-**Engines and platform**
-
-| Name | URL | Use for | Note |
-|---|---|---|---|
-| Motion | motion.dev | The one JS engine | MIT; Motion+ is paid (one-time per developer on Solo; teams and Pro are yearly). v14 since Oct 2026 |
-| React `<ViewTransition>` | react.dev/blog/2026/09/09/react-19-3 | Route and Suspense transitions | Stable in 19.3; DOM only |
-| View Transitions API | developer.mozilla.org/docs/Web/API/View_Transition_API | Underlying platform | Same-document Baseline Oct 2025 |
-| CSS entry animations | web.dev/blog/baseline-entry-animations | `@starting-style`, `allow-discrete` | Baseline 2024 |
-| GSAP | gsap.com | Marketing-route exceptions only | Free incl. plugins since Apr 2025; custom licence, not MIT |
-
-**Component collections, ordered from daily to showcase**
-
-| Name | URL | Runtime | Steal | Caveat |
-|---|---|---|---|---|
-| Animate UI | animate-ui.com | Motion | Animated Radix/Base UI/React Aria primitives (dialog, tabs, tooltip): the daily chrome | v2 ships as an npm package; copy techniques, not the dependency |
-| Motion UI | motion.dev/ui | Motion | Tokenised "feel" themes, MotionScore performance grading, a "calm" reduced-motion mode | Paid (Motion+) |
-| Motion Primitives | motion-primitives.com | Motion | Morphing dialog (card → dialog via `layoutId`), text effects, infinite slider | MIT, still beta |
-| Cult UI | cult-ui.com | Motion + Base UI | Dynamic Island, glowing "halo" form controls, shader heroes | Some pieces are niche |
-| Smooth UI | smoothui.dev | Mostly Motion | Dynamic Island, Siri Orb, morph toggles, number flow | Leans showcase despite the name |
-| React Bits | reactbits.dev | Varies: Motion, GSAP, three | Text effects, Code Slots (the slot-fill source), creative backgrounds | MIT + Commons Clause; check every component's deps |
-| Fancy Components | fancycomponents.dev | Motion (+ physics lib in places) | Typography play: variable-font hover, text rotate, scramble, physics text | Activity not re-verified |
-| Aceternity UI | ui.aceternity.com | Motion | Spotlight, lit borders, parallax, 3D cards, beams | Often lacks reduced-motion support; free + paid |
-| Skiper UI | skiper-ui.com | Motion + GSAP | The most polished per component of the paid kits | Paid; attribution on free items; two runtimes, so mine only |
-| Paper Shaders | github.com/paper-design/shaders | Its own WebGL | Mesh gradients, grain, liquid metal as React components | The one acceptable showcase dependency, isolated |
-
-Skipped as redundant: Magic UI (Aceternity does it with more flair), Kokonut, Eldora, Syntax, Animata, uiverse, Hover.dev.
-
-**Specialists**
-
-| Name | URL | Steal |
-|---|---|---|
-| Sonner | github.com/emilkowalski/sonner | Stacked, interruptible toasts; swipe out the way they came |
-| Vaul | github.com/emilkowalski/vaul | Drawer drag thresholds and curve. The repo says it's unmaintained, so learn the technique and don't adopt it new |
-| NumberFlow | number-flow.barvian.me | Per-digit rolling with stable widths (React/Vue/Svelte) |
-| cmdk | github.com/dip/cmdk | Restraint: a high-frequency surface with almost no motion |
-
-**Specs and writing**
-
-| Source | URL | Take |
-|---|---|---|
-| Emil Kowalski | animations.dev · emilkowal.ski · emilkowal.ski/skill | Frequency rule, curves, review method; his published agent skill is the nearest template to this file |
-| Rauno Freiberg | rauno.me · devouringdetails.com | Interaction details, gesture feel |
-| Josh W. Comeau | joshwcomeau.com | Springs and CSS transitions explained |
-| NN/g | nngroup.com/articles/animation-duration | 100–500ms range; exits shorter than entrances |
-| Material 3 (Expressive) | m3.material.io/styles/motion/overview/how-it-works | Spatial vs effects springs |
-| Apple WWDC23 "Animate with springs" | developer.apple.com/videos/play/wwdc2023/10158 | Duration and bounce parameters; caution above 0.4 bounce |
-| IBM Carbon | carbondesignsystem.com/elements/motion/overview | Productive vs expressive registers; 70–700ms scale |
-| Atlassian | atlassian.design/foundations/motion | Semantic motion tokens (e.g. `motion.popup.enter`) |
-| Glyph Kit | glyph-kit.traykov.cc | Text-first figures and motion timelines (§9) |
-| Benji Taylor, *Family Values* (2024) | benji.org/family-values | The essay behind Family's fluid feel: gradual revelation, "fly instead of teleport", selective emphasis, dynamic trays, text morphing |
-| Rauno, Web Interface Guidelines | rauno.me/interfaces | Interaction rules, including no extraneous animation on frequent, low-novelty actions |
-| Jhey Tompkins | codepen.io/jh3y | Pure-CSS motion experiments; the ceiling of what CSS alone can do |
-
-**Inspiration and study hubs** (browse for ideas, then extract with §5b)
-
-| Hub | URL | What's there | Caveat |
-|---|---|---|---|
-| Codrops Creative Hub | tympanus.net/codrops/hub | Open-source demos and tutorials with code; collections for typography, hover, cursor, state-to-state, scroll-driven, grids, WebGL | Mostly Three.js, GLSL and GSAP: showcase register, so study it rather than copy it. Typography, hover and state-to-state carry over to a CSS + Motion stack best |
-| Design Spells | designspells.com | ~340 "spells": micro-interactions, transitions and easter eggs from real apps, tagged by type and app | Recordings, not code; use for the *why* and the choreography |
-| 60fps | 60fps.design | Library of iOS and web app animations as native-frame-rate video, filterable by context | Its MCP server (shot search, motion breakdowns) is a paid add-on |
-| Awwwards | awwwards.com | Award-site inspiration and curated UI-animation collections | Showcase register only; rarely shows how it was built |
-
-**Tools**
-- Linear easing generator (linear-easing-generator.netlify.app, by Jake Archibald and Adam Argyle): turns any JS easing or SVG curve into `linear()`. It's a GUI alternative to §4d.
-- cubic-bezier.com: drag a curve and compare it against another while it plays.
-
-**Neighbouring agent skills** (don't load them alongside this one; they overlap and their numbers differ slightly)
-- Vercel's `web-animation-design` (github.com/vercel-labs/open-agents) and Emil's own skill are both based on *Animations on the Web*. This file already absorbs their rules, with a named vocabulary, the stack and the registers on top.
+Libraries, specialists, writing and inspiration hubs to study (not install) live in `references/catalogue.md`. Open it when borrowing a technique (§5b).
 
 ---
 

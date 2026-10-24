@@ -6,8 +6,8 @@ Opinionated design skills for AI coding agents. Each skill turns design craft in
 
 | Skill | What it covers |
 |---|---|
-| [`mkl-motion`](skills/mkl-motion/SKILL.md) | Motion for React/Next.js products. It covers when to animate and when not to. It defines three registers (daily UI, showcase, text-mode) and a one-runtime stack (CSS → View Transitions → Motion). It includes named spring tokens with measured behaviour, 46 patterns with reduced-motion fallbacks, a review checklist, and a curated catalogue of libraries to study rather than install. |
-| [`mkl-typography`](skills/mkl-typography/SKILL.md) | Web typography for laying out text, from the print canon (Bringhurst, Tschichold, Butterick, Rutter) to CSS you can ship today. It covers three registers (reading, UI, display), type-scale methods, measure and leading, vertical rhythm measured on editorial sites, OpenType features and tabular figures, `lang` and Bulgarian Cyrillic forms, hyphenation and line breaking, hanging punctuation and optical alignment, drop caps, emphasis, code and maths, font loading, dark mode, forced colours and OG images, with dated browser support and a review checklist. |
+| [`mkl-motion`](skills/mkl-motion/SKILL.md) | Motion for React/Next.js products, on by default: interactions, loading, numbers, disclosure and confirmations all move unless there's a reason not to. It defines three registers (daily UI, showcase, text-mode) and a one-runtime stack (CSS → View Transitions → Motion), named spring tokens with measured behaviour, a pattern catalogue with reduced-motion fallbacks, a review checklist, and a catalogue of libraries to study rather than install. |
+| [`mkl-typography`](skills/mkl-typography/SKILL.md) | Typography taste and traps, not the textbook. It holds house defaults (one sans, a 1.25 scale of size, line-height and tracking triplets, two number voices, a dark-mode weight step-down, named spacing), the traps that only show in served font files or the browser (stripped OpenType features, missing Bulgarian forms, `ch` versus tabular digits), and scripts that check a font file and grep a project for them. |
 
 More are on the way.
 
@@ -33,6 +33,7 @@ npx skills add Wobblz/mkl-design-skills@mkl-motion   # one skill
 
 ## How these skills are written
 
+- **Taste over textbook.** A skill keeps what an agent wouldn't do on its own: house defaults, known traps and runnable checks. General craft is assumed.
 - **One strong default.** Each rule gives a recommendation, and the alternatives are named only when they matter.
 - **Patterns, not components.** Techniques are extracted from the best libraries and rebuilt on the project's own stack and tokens, so you never inherit a second runtime.
 - **Project first.** A skill checks for the project's existing conventions and maps onto them before introducing its own.
